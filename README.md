@@ -18,18 +18,45 @@ The **Launch Validator Toolkit** captures telemetry (during playtests, Steam Nex
 
 ## Roadmap & Technical Stages
 
-### STAGE 1: Local Core (Zero-Cloud MVP) – WE ARE HERE
+### STAGE 1: Local Core (Zero-Cloud MVP) — 🟢 WE ARE HERE
 
-**Goal:** In-engine data collection and local interpretation with zero network dependency.
+**Goal:** In-engine data collection, local storage configuration, and standalone analytical interpretation with zero network dependency.
 
-* **Telemetry Core:** A thread-safe singleton (`Autoload`) based on the *Producer-Consumer* pattern. The main game thread only pushes events to a queue, while a background worker (`Thread`, `Mutex`, `Semaphore`) handles batched disk writes to `user://telemetry_buffer/`.
+* **Telemetry Core:** A thread-safe singleton (`Autoload`) based on the *Producer-Consumer* pattern. The main game thread only pushes events to a queue, while a background worker (`Thread`, `Mutex`, `Semaphore`) handles batched, atomic disk writes (`.tmp` -> `.json` rename) to `user://telemetry_buffer/` ensuring **0% FPS impact**.
 * **Critical Metrics Collection:**
-* *Session Telemetry:* Launch/exit times, hardware and OS environment parameters.
-* *Funnel Events:* Milestone progressions, checkpoints and tutorial completion.
+* *Session Telemetry:* Launch/exit times, hardware, and OS environment parameters.
+* *Funnel Events:* Milestone progressions, checkpoints, and tutorial completion.
 * *Early Churn Moments:* Pinpointing the exact moment and scene where a player closed the game within the first 120 minutes.
 
+#### STAGE 1.1: Privacy Opt-in/Opt-out Mechanism & Playtest Ops
 
-* **In-Engine UI Dashboard:** A custom Godot editor interface (`EditorPlugin`) that parses local JSON files, visualizes funnels, and outputs text-based diagnostics (e.g., *"Warning: 40% of playtesters quit at minute 110. High refund risk"*).
+**Goal:** Maintain GDPR/CCPA compliance from day one and provide a manual fallback data-pipeline for closed playtests.
+
+* **Privacy Gateway:** A mandatory UI overlay component triggered on the very first game launch. It prompts the player with a clear, non-legalistic disclaimer regarding anonymous telemetry collection.
+* If the user selects `[Accept]`, the toolkit functions normally.
+* If the user selects `[Decline]`, the toolkit instantly sets `_accepting_events = false`, completely halting queue processing and disk I/O.
+
+
+* **The "Export Logs" Fallback Button:** A dedicated, developer-facing debug option (can be mapped to an in-game settings menu or a hotkey like `F12`). When pressed, it executes `ProjectSettings.globalize_path("user://telemetry_buffer/")` and triggers `OS.shell_open()`, instantly opening the native OS file manager (Explorer/Finder) for the tester.
+
+> ⚠️ **STAGE 1 PLAYTEST OPERATIONS (THE MANUAL CRUTCH):**
+> Since Cloudflare integration is decoupled into Stage 2, running a playtest right now relies on a **closed-community loop**.
+> 1. The developer distributes the game build to trusted testers (via Discord, Itch.io, or Steam Playtest).
+> 2. Testers complete their gameplay session.
+> 3. Before closing or from the main menu, the tester clicks the **"Open Logs Folder"** button, packs the accumulated `batch_*.json` files into a `.zip` archive, and manually sends it back to the developer (via Discord DM, form upload, or email).
+> 
+> 
+> 🛑 **NOTE:** This manual friction is a temporary bottleneck. **It will be completely deprecated and removed in STAGE 2**, where all background logs will silently and asynchronously flush directly to the serverless cloud without interrupting the player.
+
+#### STAGE 1.2: In-Engine UI Dashboard (EditorPlugin)
+
+**Goal:** Prevent data-hoarding and give indie developers an instant, actionable business diagnosis without leaving the Godot Editor.
+
+Instead of staring at thousands of raw JSON files received from testers, the developer drops those `.json` files into their own local `user://telemetry_buffer/` folder and opens a custom **Telemetry** viewport tab integrated right into the Godot 4 editor layout.
+
+* **Funnel Analytics View:** Automatically parses all available batches, aggregates milestones, and renders a visual step-by-step conversion chart. Steps with a drop-off rate higher than 50% are automatically highlighted in red with contextual debugging recommendations.
+* **The 2-Hour Ghost (Refund Predictor):** A specialized density chart mapping playtester session durations. If a high concentration of session-end triggers is detected between minutes 100 and 119, the dashboard throws a critical alert: *«High Refund Risk: Mass churn detected immediately before the Steam 120-minute refund window closes.»*
+* **Ragequit / Drop-off Heatmap:** Displays a ranked list of scene paths and level names where players most frequently triggered `session_end` or ungraceful exits, identifying hidden UX bottlenecks and pacing flaws.
 
 ### STAGE 2: Distributed Transport (Edge Serverless Transport)
 
