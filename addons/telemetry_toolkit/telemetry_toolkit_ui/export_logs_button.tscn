@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://siga0q3ebtgi"]
+
+[ext_resource type="Script" uid="uid://dxc5msumoiio5" path="res://addons/telemetry_toolkit/export_logs_button.gd" id="1_oamjq"]
+
+[node name="ExportLogsButton" type="Button"]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Export Logs"
+script = ExtResource("1_oamjq")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 38.0
+offset_right = 395.0
+offset_bottom = 61.0
+text = "The log folder is open. Please compress the JSON files into an archive and send it to the developer."

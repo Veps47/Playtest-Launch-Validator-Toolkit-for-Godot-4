@@ -18,7 +18,7 @@ The **Launch Validator Toolkit** captures telemetry (during playtests, Steam Nex
 
 ## Roadmap & Technical Stages
 
-### STAGE 1: Local Core (Zero-Cloud MVP) — 🟢 WE ARE HERE
+### STAGE 1: Local Core (Zero-Cloud MVP)
 
 **Goal:** In-engine data collection, local storage configuration, and standalone analytical interpretation with zero network dependency.
 
@@ -28,7 +28,7 @@ The **Launch Validator Toolkit** captures telemetry (during playtests, Steam Nex
 * *Funnel Events:* Milestone progressions, checkpoints, and tutorial completion.
 * *Early Churn Moments:* Pinpointing the exact moment and scene where a player closed the game within the first 120 minutes.
 
-#### STAGE 1.1: Privacy Opt-in/Opt-out Mechanism & Playtest Ops
+#### STAGE 1.1: Privacy Opt-in/Opt-out Mechanism & Playtest Ops  — 🟢 WE ARE HERE
 
 **Goal:** Maintain GDPR/CCPA compliance from day one and provide a manual fallback data-pipeline for closed playtests.
 
