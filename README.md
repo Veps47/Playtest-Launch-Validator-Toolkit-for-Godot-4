@@ -18,7 +18,7 @@ The **Launch Validator Toolkit** captures telemetry (during playtests, Steam Nex
 
 ## Roadmap & Technical Stages
 
-### STAGE 1: Local Core (Zero-Cloud MVP)
+### STAGE 1: Local Core (Zero-Cloud MVP) – WE ARE HERE
 
 **Goal:** In-engine data collection and local interpretation with zero network dependency.
 
@@ -55,7 +55,7 @@ The **Launch Validator Toolkit** captures telemetry (during playtests, Steam Nex
 **Goal:** A high-performance data analysis engine transforming the plugin into a strategic consulting asset.
 
 * **Storage Optimization:** Migrating the pipeline from heavy JSON to binary columnar **Parquet** format, compressing data 8-10x and accelerating analytical queries.
-* **Embedded DuckDB:** Integrating the lightweight OLAP database `DuckDB` right into the Godot plugin. It runs locally on the developer's PC and executes `Remote Querying` via standard SQL — reading Parquet files directly from Cloudflare R2 without downloading them entirely.
+* **Embedded DuckDB:** Integrating the lightweight OLAP database `DuckDB` right into the Godot plugin. It runs locally on the developer's PC and executes `Remote Querying` via standard SQL – reading Parquet files directly from Cloudflare R2 without downloading them entirely.
 * **Steam Heuristics Layer:** Automated computation of specialized business metrics:
 * *The 2-Hour Refund Ghost:* Analyzing session density distribution within the first 120 minutes to predict refund rates based on session dynamics.
 * *Teal Ghetto Price-to-Content Friction:* Mapping average Time-to-Completion against the Steam price point to flag mismatches in player expectations.
